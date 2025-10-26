@@ -1,5 +1,7 @@
 import { FaCheck } from "react-icons/fa";
 import images from "../assets";
+import { roomData } from "../db/data"; // import roomData from "../db/data";
+
 
 
 export const adultsList = [
@@ -25,18 +27,21 @@ export const sliderData = [
         title: 'Your Luxury Hotel For Vacation',
         bg: images.Slider1,
         btnNext: 'See our rooms',
+         to: '#rooms'
     },
     {
         id: 2,
         title: 'Feel Relax & Enjoy Your Luxuriousness',
         bg: images.Slider2,
         btnNext: 'See our rooms',
+         to: '#rooms'
     },
     {
         id: 3,
         title: 'Your Luxury Hotel For Vacation',
         bg: images.Slider3,
         btnNext: 'See our rooms',
+         to: '#rooms'
     },
 ]
 

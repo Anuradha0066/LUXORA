@@ -1,37 +1,28 @@
-import { BrowserRouter, Route, Routes, } from 'react-router-dom';
-import { Footer, Header, PageNotFound } from './components';
-import { Home, RoomDetails } from './pages';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import Home from './pages/Home';
+import RoomDetails from './pages/RoomDetails';
+import StaffLogin from './pages/StaffLogin';
+import StaffDashboard from './pages/StaffDashboard';
+import ProtectedRoute from './components/ProtectedRoute';
 
-
-const App = () => {
-
-  // const paths = [
-  //   { path: '/', element: <Home /> },
-  //   { path: '/room/:id', element: <RoomDetails /> },
-  //   { path: '*', element: <PageNotFound /> },
-  // ]
-
-  // const router = createBrowserRouter(paths);
-  // <RouterProvider router={router} /> 
-
+function App() {
   return (
-
-    <main className=''>
-      <BrowserRouter>
-
-        <Header />
-
-        <Routes>
-          <Route path={'/'} element={<Home />} />
-          <Route path={'/room/:id'} element={<RoomDetails />} />
-          <Route path={'*'} element={<PageNotFound />} />
-        </Routes>
-
-        <Footer />
-
-      </BrowserRouter>
-    </main>
-  )
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/room/:id" element={<RoomDetails />} />
+        <Route path="/staff-login" element={<StaffLogin />} />
+        <Route
+          path="/staff-dashboard"
+          element={
+            <ProtectedRoute>
+              <StaffDashboard />
+            </ProtectedRoute>
+          }
+        />
+      </Routes>
+    </BrowserRouter>
+  );
 }
 
-export default App
+export default App;
