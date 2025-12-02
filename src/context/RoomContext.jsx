@@ -13,6 +13,8 @@ export const RoomContext = ({ children }) => {
   const [adults, setAdults] = useState('1 Adult');
   const [kids, setKids] = useState('0 Kid');
   const [total, setTotal] = useState(0);
+  const [availabilityCount, setAvailabilityCount] = useState(null);
+  const [availabilityMessage, setAvailabilityMessage] = useState('');
 
 
   useEffect(() => { setTotal(+adults[0] + +kids[0]) });
@@ -22,6 +24,8 @@ export const RoomContext = ({ children }) => {
     setAdults('1 Adult');
     setKids('0 Kid');
     setRooms(roomData)
+    setAvailabilityCount(null);
+    setAvailabilityMessage('');
   };
 
 
@@ -36,6 +40,19 @@ export const RoomContext = ({ children }) => {
     setTimeout(() => {
       setLoading(false);
       setRooms(filterRooms); // refresh UI with new filtered rooms after 3 second...
+      // update availability info
+      setAvailabilityCount(filterRooms.length);
+      if (filterRooms.length === 0) {
+        setAvailabilityMessage('No rooms available for selected guests');
+      } else if (filterRooms.length === 1) {
+        setAvailabilityMessage('1 room available for selected guests');
+      } else {
+        setAvailabilityMessage(`${filterRooms.length} rooms available for selected guests`);
+      }
+      // automatically clear message after 8 seconds
+      setTimeout(() => {
+        setAvailabilityMessage('');
+      }, 8000);
     }, 3000);
   }
 
@@ -46,6 +63,8 @@ export const RoomContext = ({ children }) => {
     kids, setKids,
     handleCheck,
     resetRoomFilterData,
+    availabilityCount,
+    availabilityMessage,
   };
 
 

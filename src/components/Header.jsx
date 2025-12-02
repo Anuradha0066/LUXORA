@@ -83,9 +83,9 @@ const Header = () => {
         <button onClick={handleHomeClick} className='bg-transparent border-0 p-0'>
           {
             header ? (
-              <p>Hotel Ashirwad</p>
+              <p>Hotel LUXORA</p>
             ) : (
-              <p style={{ color: "white" }}>Hotel Ashirwad</p>
+              <p style={{ color: "white" }}>Hotel LUXORA</p>
             )
           }
         </button>

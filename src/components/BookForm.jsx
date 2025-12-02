@@ -1,10 +1,12 @@
 import { AdultsDropdown, CheckIn, CheckOut, KidsDropdown } from '.';
 import { useRoomContext } from '../context/RoomContext';
+import { Link } from 'react-router-dom';
 
 
 const BookForm = () => {
 
   const { handleCheck } = useRoomContext();
+  const { availabilityMessage, availabilityCount } = useRoomContext();
 
 
   return (
@@ -27,13 +29,37 @@ const BookForm = () => {
           <KidsDropdown />
         </div>
 
-        <button
-          type='submit'
-          className='btn btn-primary'
-          onClick={(e) => handleCheck(e)}
-        >
-          Check Now
-        </button>
+        <div className='flex items-center gap-4'>
+          <button
+            type='submit'
+            className='btn btn-primary'
+            onClick={(e) => handleCheck(e)}
+          >
+            Check Now
+          </button>
+
+          {/* availability message shown after check */}
+          {
+            availabilityMessage && (
+              <div className='text-sm text-primary bg-white/90 px-3 py-2 rounded shadow'>
+                <span>{availabilityMessage}</span>
+                {
+                  availabilityCount > 0 && (
+                    <button
+                      onClick={() => {
+                        const el = document.getElementById('rooms');
+                        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                      }}
+                      className='ml-3 underline'
+                    >
+                      View
+                    </button>
+                  )
+                }
+              </div>
+            )
+          }
+        </div>
 
       </div>
     </form>

@@ -11,3 +11,4 @@ export { default as Rooms } from './Rooms';
 export { default as Room } from './Room';
 
 export { default as ScrollToTop } from '../utils/ScrollToTop';
+export { default as Layout } from './Layout';
