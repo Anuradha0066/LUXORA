@@ -16,6 +16,10 @@ export const RoomContext = ({ children }) => {
   const [availabilityCount, setAvailabilityCount] = useState(null);
   const [availabilityMessage, setAvailabilityMessage] = useState('');
 
+  // New states for check-in and check-out dates
+  const [checkInDate, setCheckInDate] = useState(null);
+  const [checkOutDate, setCheckOutDate] = useState(null);
+
 
   useEffect(() => { setTotal(+adults[0] + +kids[0]) });
 
@@ -26,6 +30,8 @@ export const RoomContext = ({ children }) => {
     setRooms(roomData)
     setAvailabilityCount(null);
     setAvailabilityMessage('');
+    setCheckInDate(null);
+    setCheckOutDate(null);
   };
 
 
@@ -61,6 +67,8 @@ export const RoomContext = ({ children }) => {
     rooms, loading,
     adults, setAdults,
     kids, setKids,
+    checkInDate, setCheckInDate,
+    checkOutDate, setCheckOutDate,
     handleCheck,
     resetRoomFilterData,
     availabilityCount,

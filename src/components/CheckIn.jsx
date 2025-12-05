@@ -1,28 +1,33 @@
 import { BsCalendar } from 'react-icons/bs';
-import { useState } from 'react';
+import { useRoomContext } from '../context/RoomContext';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import '../style/datepicker.css';
 
-
 const CheckIn = () => {
+  const { checkInDate, setCheckInDate, checkOutDate } = useRoomContext();
 
-  const [startDate, setStartDate] = useState(false);
+  const today = new Date();
 
   return (
     <div className='relative flex items-center justify-end h-full'>
-
       <div className='absolute z-10 pr-8'>
-        <div><BsCalendar className='text-accent text-base' /> </div>
+        <BsCalendar className='text-accent text-base' />
       </div>
 
       <DatePicker
         className='w-full h-full'
-        selected={startDate}
+        selected={checkInDate}
         placeholderText='Check in'
-        onChange={(date) => setStartDate(date)}
+        onChange={(date) => {
+          setCheckInDate(date);
+          // if checkout is before checkin, reset checkout
+          if (checkOutDate && date > checkOutDate) {
+            setCheckOutDate(null);
+          }
+        }}
+        minDate={today}
       />
-
     </div>
   );
 };

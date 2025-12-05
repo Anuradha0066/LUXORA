@@ -8,19 +8,50 @@ const router = express.Router();
 
 // Customer: create booking
 router.post('/', async (req, res) => {
-  const { userId, service, bookingDate, staffId } = req.body;
+  const {
+    userId,
+    service,
+    bookingDate,
+    staffId,
+    guestName,
+    guestEmail,
+    roomName,
+    roomId,
+    checkIn,
+    checkOut,
+    adults,
+    kids,
+    price
+  } = req.body;
 
-  if (!userId || !service || !bookingDate) {
+  // Validate new required fields
+  if (!guestName || !guestEmail || !roomName || !roomId || !checkIn || !checkOut || !price) {
     return res.status(400).json({ success: false, message: 'Missing required fields' });
   }
 
   try {
-    const booking = await Booking.create({ userId, service, bookingDate, staffId });
+    const booking = await Booking.create({
+      userId,        // optional
+      service,       // optional
+      bookingDate,   // optional
+      staffId,       // optional
+      guestName,
+      guestEmail,
+      roomName,
+      roomId,
+      checkIn,
+      checkOut,
+      adults,
+      kids,
+      price,
+    });
+
     res.status(201).json({ success: true, booking });
   } catch (err) {
     res.status(500).json({ success: false, message: 'Server error', error: err.message });
   }
 });
+
 
 // Staff: get all bookings (populated with user & staff info)
 router.get('/', protectStaff, async (req, res) => {
