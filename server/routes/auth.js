@@ -1,22 +1,35 @@
+// routes/auth.js
 import express from 'express';
 import Staff from '../models/Staff.js';
-import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import dotenv from 'dotenv';
-dotenv.config();
 
 const router = express.Router();
 
 router.post('/login', async (req, res) => {
-    console.log("Login attempt:", req.body);
-
   try {
-    const { email, password } = req.body;
-    const staff = await Staff.findOne({ email });
-    if (!staff) return res.status(401).json({ message: 'Invalid credentials' });
+    console.log('Login request body:', req.body);
 
-    const ok = await bcrypt.compare(password, staff.passwordHash);
-    if (!ok) return res.status(401).json({ message: 'Invalid credentials' });
+    const { email, password } = req.body;
+    console.log('Email:', email);
+    console.log('Password:', password);
+    if (!email || !password) {
+      return res.status(400).json({ message: 'Email and password required' });
+    }
+
+    const staff = await Staff.findOne({ email });
+    console.log('DB staff found:', !!staff, staff ? { email: staff.email, role: staff.role, _id: staff._id } : null);
+
+    if (!staff) {
+      return res.status(401).json({ message: 'Invalid credentials - no staff' });
+    }
+
+    // Use the model method (you defined this in Staff schema)
+    const ok = await staff.matchPassword(password);
+    console.log('Password compare result:', ok);
+
+    if (!ok) {
+      return res.status(401).json({ message: 'Invalid credentials - wrong password' });
+    }
 
     const token = jwt.sign(
       { id: staff._id, role: staff.role, email: staff.email },
@@ -24,9 +37,10 @@ router.post('/login', async (req, res) => {
       { expiresIn: '8h' }
     );
 
-    res.json({ token, user: { username: staff.username, email: staff.email, role: staff.role } });
+    return res.json({ success: true, token, staff: { _id: staff._id, name: staff.name, email: staff.email, role: staff.role } });
   } catch (err) {
-    res.status(500).json({ message: 'Server error', error: err.message });
+    console.error('Login error:', err);
+    return res.status(500).json({ message: 'Server error', error: err.message });
   }
 });
 

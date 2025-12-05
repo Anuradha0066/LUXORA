@@ -1,7 +1,8 @@
 import express from 'express';
 import Room from '../models/Room.js';
-import auth from '../middleware/auth.js';
+import { protectStaff } from '../middleware/auth.js'; // ✅ fixed import
 import { isAdmin } from '../middleware/role.js';
+
 const router = express.Router();
 
 // public: get all rooms
@@ -15,7 +16,7 @@ router.get('/', async (req, res) => {
 });
 
 // admin: create room
-router.post('/', auth, isAdmin, async (req, res) => {
+router.post('/', protectStaff, isAdmin, async (req, res) => {
   try {
     const room = await Room.create(req.body);
     res.status(201).json(room);

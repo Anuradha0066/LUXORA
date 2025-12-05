@@ -13,7 +13,7 @@ function App() {
         {/* Public routes with header/footer */}
         <Route path="/" element={<Layout><Home /></Layout>} />
         <Route path="/room/:id" element={<Layout><RoomDetails /></Layout>} />
-        
+
         {/* Staff routes without header/footer */}
         <Route path="/staff-login" element={<StaffLogin />} />
         <Route

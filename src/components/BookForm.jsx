@@ -8,6 +8,11 @@ const BookForm = () => {
   const { handleCheck } = useRoomContext();
   const { availabilityMessage, availabilityCount } = useRoomContext();
 
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  const res = await fetch('/api/bookings', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ /* booking data */ }) });
+  // handle response ...
+};
 
   return (
     <form className='h-[300px] lg:h-[70px] w-full'>

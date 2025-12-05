@@ -1,8 +1,17 @@
 import React from 'react';
 import { Navigate } from 'react-router-dom';
 
-export default function ProtectedRoute({ children }) {
-  const token = localStorage.getItem('staffToken'); // check JWT token
-  if (!token) return <Navigate to="/staff-login" replace />;
+const ProtectedRoute = ({ children }) => {
+  const token = localStorage.getItem('staffToken'); // JWT token
+
+  if (!token) {
+    // If not logged in, redirect to staff login
+    return <Navigate to="/staff-login" replace />;
+  }
+
+  // Optionally: verify token expiry if needed
+
   return children;
-}
+};
+
+export default ProtectedRoute;

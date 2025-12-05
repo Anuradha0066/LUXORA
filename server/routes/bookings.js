@@ -1,28 +1,24 @@
 import express from 'express';
-import Booking from '../models/Booking.js';
-import auth from '../middleware/auth.js';
-import { isAdmin } from '../middleware/role.js';
+import Booking from '../models/Booking.js'; // ✅ ESM import
+
 const router = express.Router();
 
-// public: create booking
+// Customer booking
 router.post('/', async (req, res) => {
+  const { userId, service, bookingDate, staffId } = req.body;
+
+  // Basic validation
+  if (!userId || !service || !bookingDate) {
+    return res.status(400).json({ success: false, message: 'Missing required fields' });
+  }
+
   try {
-    const data = req.body;
-    const booking = await Booking.create(data);
-    res.status(201).json(booking);
+    const booking = await Booking.create({ userId, service, bookingDate, staffId });
+    res.json({ success: true, booking });
   } catch (err) {
-    res.status(500).json({ message: 'Server error', error: err.message });
+    res.status(500).json({ success: false, message: 'Server error', error: err.message });
   }
 });
 
-// protected: list bookings for staff/admin
-router.get('/', auth,  async (req, res) => {
-  try {
-    const list = await Booking.find().sort({ createdAt: -1 }).limit(500);
-    res.json(list);
-  } catch (err) {
-    res.status(500).json({ message: 'Server error', error: err.message });
-  }
-});
-
+// ✅ ESM default export
 export default router;

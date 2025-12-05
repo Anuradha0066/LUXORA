@@ -1,105 +1,59 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 
-export default function StaffDashboard() {
-  const navigate = useNavigate();
+const StaffDashboard = () => {
   const [bookings, setBookings] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
 
   useEffect(() => {
-    const loadBookings = async () => {
-      const token = localStorage.getItem('staffToken');
-      if (!token) {
-        navigate('/staff-login', { replace: true });
-        return;
-      }
-
+    const fetchBookings = async () => {
       try {
-        const res = await fetch('http://localhost:5000/api/bookings', {
-          headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json',
-          },
+        const token = localStorage.getItem('staffToken');
+        const res = await fetch('http://localhost:5000/api/staff/bookings', {
+          headers: { Authorization: `Bearer ${token}` },
         });
-
-        if (!res.ok) {
-          console.error('Server returned', res.status);
-          throw new Error('Unauthorized');
-        }
-
         const data = await res.json();
-        setBookings(data);
+        if (data.success) {
+          setBookings(data.bookings);
+        } else {
+          setError(data.message || 'Failed to fetch bookings');
+        }
       } catch (err) {
-        console.error('Failed to load bookings:', err);
-        localStorage.removeItem('staffToken'); // remove invalid token
-        navigate('/staff-login', { replace: true });
-      } finally {
-        setLoading(false);
+        console.error(err);
+        setError('Server error');
       }
     };
 
-    loadBookings();
-  }, [navigate]);
-
-  const logout = () => {
-    localStorage.removeItem('staffToken');
-    navigate('/staff-login', { replace: true });
-  };
+    fetchBookings();
+  }, []);
 
   return (
-    <div className="min-h-screen bg-gray-100 flex">
-      {/* Sidebar */}
-      <aside className="w-64 bg-white shadow-md p-6">
-        <h3 className="text-xl font-bold mb-6">Hotel Staff</h3>
-        <nav className="flex flex-col gap-3">
-          <button className="text-left py-2 px-3 rounded hover:bg-gray-100">Dashboard</button>
-        </nav>
-        <div className="mt-6">
-          <button onClick={logout} className="w-full bg-red-500 text-white py-2 rounded">
-            Logout
-          </button>
-        </div>
-      </aside>
-
-      {/* Main */}
-      <main className="flex-1 p-8">
-        <h1 className="text-2xl font-semibold mb-6">Dashboard</h1>
-
-        {loading ? (
-          <p>Loading bookings...</p>
-        ) : bookings.length === 0 ? (
-          <p>No bookings yet.</p>
-        ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full border-collapse border border-gray-300">
-              <thead>
-                <tr className="bg-gray-200">
-                  <th className="border px-2 py-1">#</th>
-                  <th className="border px-2 py-1">Guest</th>
-                  <th className="border px-2 py-1">Email</th>
-                  <th className="border px-2 py-1">Room</th>
-                  <th className="border px-2 py-1">Check-in</th>
-                  <th className="border px-2 py-1">Check-out</th>
-                  <th className="border px-2 py-1">Amount</th>
-                </tr>
-              </thead>
-              <tbody>
-                {bookings.map((b, i) => (
-                  <tr key={b._id}>
-                    <td className="border px-2 py-1">{i + 1}</td>
-                    <td className="border px-2 py-1">{b.guest}</td>
-                    <td className="border px-2 py-1">{b.email}</td>
-                    <td className="border px-2 py-1">{b.room}</td>
-                    <td className="border px-2 py-1">{b.checkIn}</td>
-                    <td className="border px-2 py-1">{b.checkOut}</td>
-                    <td className="border px-2 py-1">₹{b.amount}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
-      </main>
+    <div className="max-w-4xl mx-auto mt-10 p-4">
+      <h2 className="text-2xl font-bold mb-4">My Bookings</h2>
+      {error && <p className="text-red-500 mb-2">{error}</p>}
+      <table className="w-full border">
+        <thead>
+          <tr className="bg-gray-100">
+            <th className="border p-2">Customer</th>
+            <th className="border p-2">Email</th>
+            <th className="border p-2">Service/Room</th>
+            <th className="border p-2">Booking Date</th>
+            <th className="border p-2">Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          {bookings.map((b) => (
+            <tr key={b._id}>
+              <td className="border p-2">{b.userId?.name || 'Guest'}</td>
+              <td className="border p-2">{b.userId?.email || '-'}</td>
+              <td className="border p-2">{b.service}</td>
+              <td className="border p-2">{new Date(b.bookingDate).toLocaleString()}</td>
+              <td className="border p-2">{b.status}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
-}
+};
+
+export default StaffDashboard;
