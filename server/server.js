@@ -6,6 +6,7 @@ import bookingsRouter from './routes/bookings.js';
 import roomsRouter from './routes/rooms.js';
 import authRouter from './routes/auth.js';
 import staffRouter from './routes/staff.js';
+import usersRouter from './routes/User.js';
 
 dotenv.config();
 const app = express();
@@ -24,7 +25,7 @@ app.use('/api/bookings', bookingsRouter);
 app.use('/api/rooms', roomsRouter);
 app.use('/api/auth', authRouter);
 app.use('/api/staff', staffRouter);
-
+app.use('/api/user', usersRouter);
 app.get('/api/health', (req, res) => res.json({ ok: true }));
 
 const PORT = process.env.PORT || 5000;
